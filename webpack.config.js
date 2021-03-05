@@ -58,7 +58,8 @@ const webviewConfig = {
         use: {
           loader: 'babel-loader'
         }
-      }
+      },
+      { test: /\.css$/, use: 'css-loader' }
     ]
   }
 };
