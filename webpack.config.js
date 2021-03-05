@@ -48,7 +48,7 @@ const webviewConfig = {
     filename: 'bundle.js'
   },
   resolve: {
-    extensions: ['.tsx', '.jsx', '.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js']
   },
   module: {
     rules: [
@@ -56,10 +56,7 @@ const webviewConfig = {
         test: [/\.tsx?$/, /\.ts?$/, /\.js?$/],
         exclude: /node_modules/,
         use: {
-          loader: 'babel-loader',
-          options: {
-              presets: ['@babel/preset-env']
-          }
+          loader: 'babel-loader'
         }
       }
     ]
