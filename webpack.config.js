@@ -42,7 +42,7 @@ const webviewConfig = {
   target: 'node',
 	mode: 'development',
 
-  entry: './src/webview/index.js',
+  entry: './src/webview/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
