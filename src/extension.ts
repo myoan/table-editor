@@ -32,6 +32,9 @@ function getWebviewContent(extPath: string) {
 </head>
 <body>
     <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
+	<script>
+	const vscode = acquireVsCodeApi();
+	</script>
 	<div id="root"></div>
     <script src="${scriptUri}"></script>
 </body>

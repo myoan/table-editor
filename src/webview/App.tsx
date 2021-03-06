@@ -10,7 +10,7 @@ interface VsCodeApi {
   getState(): {};
 }
 
-declare function acquireVsCodeApi(): VsCodeApi;
+declare const vscode: VsCodeApi;
 
 type RowProps = {
   idx: number
@@ -121,9 +121,7 @@ interface AppState {
 class App extends React.Component<AppProps, AppState> {
   constructor(props: AppProps) {
     super(props);
-    console.log('App called');
     const yaml = YAML.parse("---");
-    const vscode = acquireVsCodeApi();
     this.state = {
       yaml: yaml,
       vscode: vscode
