@@ -131,13 +131,13 @@ class App extends React.Component<AppProps, AppState> {
       const message = event.data;
 
       switch (message.command) {
-        case 'yamble':
+        case 'liml':
           console.log(message.data);
           const newYaml = YAML.parse(message.data);
           if (!Array.isArray(newYaml)) {
             return
           }
-          // this.setState({yaml: newYaml});
+          this.setState({yaml: newYaml});
       }
     })
   }
@@ -148,7 +148,7 @@ class App extends React.Component<AppProps, AppState> {
     this.setState({yaml: newYaml});
     // send data to editor
     this.state.vscode.postMessage({
-      command: 'yamble',
+      command: 'liml',
       data: YAML.stringify(this.state.yaml)
     })
   }

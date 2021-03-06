@@ -4,18 +4,44 @@ import * as vscode from 'vscode';
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
 		vscode.commands.registerCommand('liml.start', () => {
-			// Create and show panel
-			const panel = vscode.window.createWebviewPanel(
-				'catCoding',
-				'Cat Coding',
-				vscode.ViewColumn.One,
-				{ enableScripts: true }
-			);
-		
-			// And set its HTML content
-			panel.webview.html = getWebviewContent(context.extensionPath);
+			const editor = vscode.window.visibleTextEditors[0];
+			const wp = new WebviewPanel(context.extensionPath, editor);
 		})
 	);
+}
+
+class WebviewPanel {
+	private _extPath: string;
+	private _panel: vscode.WebviewPanel;
+	private _editor: vscode.TextEditor;
+
+	constructor(extPath: string, editor: vscode.TextEditor) {
+		this._extPath = extPath;
+		this._editor = editor;
+		this._panel = vscode.window.createWebviewPanel(
+			'catCoding',
+			'Cat Coding',
+			vscode.ViewColumn.Beside,
+			{ enableScripts: true }
+		);
+		
+		this._panel.webview.html = getWebviewContent(this._extPath);
+		this._panel.webview.postMessage({
+			command: 'liml',
+			data: vscode.workspace.textDocuments[0].getText()
+		});
+		this._panel.webview.onDidReceiveMessage(message => {
+			switch (message.command) {
+				case "liml":
+					console.log('get message from webview: ' + message.data)
+					let textDocument =  vscode.workspace.textDocuments[0];
+					let invalidRange = new vscode.Range(0, 0, textDocument!.lineCount, 0);
+					let fullRange = textDocument!.validateRange(invalidRange);
+					this._editor.edit(edit => edit.replace(fullRange, message.data));
+					return;
+			}
+		}, null);
+	}
 }
 
 function getWebviewContent(extPath: string) {
