@@ -17,7 +17,7 @@
 		"commands": [
 			{
 				"command": "liml.start",
-				"title": "Hello World"
+				"title": "LIML Editor"
 			}
 		]
 	},

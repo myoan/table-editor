@@ -19,8 +19,8 @@ class WebviewPanel {
 		this._extPath = extPath;
 		this._editor = editor;
 		this._panel = vscode.window.createWebviewPanel(
-			'catCoding',
-			'Cat Coding',
+			'liml',
+			'LIML editor',
 			vscode.ViewColumn.Beside,
 			{ enableScripts: true }
 		);
@@ -54,10 +54,9 @@ function getWebviewContent(extPath: string) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cat Coding</title>
+    <title>LIML Editor</title>
 </head>
 <body>
-    <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
 	<script>
 	const vscode = acquireVsCodeApi();
 	</script>
