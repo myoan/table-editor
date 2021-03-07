@@ -4,7 +4,7 @@
 
 const path = require('path');
 
-const config = {
+const serverConfig = {
   target: 'node', // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
 	mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
 
@@ -38,11 +38,11 @@ const config = {
   }
 };
 
-const webviewConfig = {
+const clientConfig = {
   target: 'node',
 	mode: 'development',
 
-  entry: './src/webview/index.tsx',
+  entry: './src/client/index.tsx',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -64,4 +64,4 @@ const webviewConfig = {
   }
 };
 
-module.exports = [config, webviewConfig];
+module.exports = [serverConfig, clientConfig];
