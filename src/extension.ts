@@ -33,7 +33,7 @@ class WebviewPanel {
 		this._panel.webview.onDidReceiveMessage(message => {
 			switch (message.command) {
 				case "liml":
-					console.log('get message from webview: ' + message.data)
+					console.log('get message from webview: ' + message.data);
 					let textDocument =  vscode.workspace.textDocuments[0];
 					let invalidRange = new vscode.Range(0, 0, textDocument!.lineCount, 0);
 					let fullRange = textDocument!.validateRange(invalidRange);

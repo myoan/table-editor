@@ -8,7 +8,7 @@ type CellProps = {
   height: number
   text: string
   onClick: (v: any) => void
-}
+};
 
 const Cell: React.FC<CellProps> = props => {
   return React.createElement(
@@ -47,7 +47,7 @@ const Cell: React.FC<CellProps> = props => {
           let canvasPos = canvas.getBoundingClientRect();
           let input = document.getElementById('input-layer');
           let textarea = document.createElement('textarea');
-          if (input === null) { return }
+          if (input === null) { return; }
 
           input.appendChild(textarea);
           textarea.value = props.text;
@@ -67,11 +67,11 @@ const Cell: React.FC<CellProps> = props => {
           textarea.style.resize = 'none';
           textarea.addEventListener('keydown', (e) => {
             if (e.keyCode === 13) {
-              console.log('press enter')
+              console.log('press enter');
               console.log(textarea.value);
               props.onClick(textarea.value);
               let input = document.getElementById('input-layer');
-              if (input === null) { return }
+              if (input === null) { return; }
 
               while (input.firstChild) { input.removeChild(input.firstChild); }
             }
@@ -80,6 +80,6 @@ const Cell: React.FC<CellProps> = props => {
       }
     )
   );
-}
+};
 
 export default Cell;
