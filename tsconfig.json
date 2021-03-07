@@ -13,7 +13,6 @@
 		"jsx": "react"
 	},
 	"exclude": [
-		"src/webview/test",
 		"node_modules",
 		".vscode-test"
 	]
