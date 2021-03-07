@@ -2,35 +2,52 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
+	let wp: WebviewPanel;
 	context.subscriptions.push(
 		vscode.commands.registerCommand('liml.start', () => {
 			const editor = vscode.window.visibleTextEditors[0];
-			const wp = new WebviewPanel(context.extensionPath, editor);
+			wp = new WebviewPanel(context.extensionPath, editor);
 		})
+	);
+
+	vscode.workspace.onDidChangeTextDocument(editor => {
+			if (editor === undefined) {
+				return;
+			}
+			if (editor.document.languageId !== "yaml") {
+				return;
+			}
+			wp.panel.webview.postMessage({
+				command: 'liml',
+				data: editor.document.getText()
+			});
+		},
+		null,
+		context.subscriptions
 	);
 }
 
-class WebviewPanel {
+export class WebviewPanel {
+	panel: vscode.WebviewPanel;
 	private _extPath: string;
-	private _panel: vscode.WebviewPanel;
 	private _editor: vscode.TextEditor;
 
 	constructor(extPath: string, editor: vscode.TextEditor) {
 		this._extPath = extPath;
 		this._editor = editor;
-		this._panel = vscode.window.createWebviewPanel(
+		this.panel = vscode.window.createWebviewPanel(
 			'liml',
 			'LIML editor',
 			vscode.ViewColumn.Beside,
 			{ enableScripts: true }
 		);
 		
-		this._panel.webview.html = getWebviewContent(this._extPath);
-		this._panel.webview.postMessage({
+		this.panel.webview.html = this.getWebviewContent();
+		this.panel.webview.postMessage({
 			command: 'liml',
 			data: vscode.workspace.textDocuments[0].getText()
 		});
-		this._panel.webview.onDidReceiveMessage(message => {
+		this.panel.webview.onDidReceiveMessage(message => {
 			switch (message.command) {
 				case "liml":
 					console.log('get message from webview: ' + message.data);
@@ -41,27 +58,30 @@ class WebviewPanel {
 					return;
 			}
 		}, null);
+
+
 	}
-}
 
-function getWebviewContent(extPath: string) {
-	const scriptPathOnDisk = vscode.Uri.file(path.join(extPath, 'dist', 'bundle.js'));
-	console.log(scriptPathOnDisk);
-	const scriptUri = scriptPathOnDisk.with({ scheme: 'vscode-resource' });
+	scriptUri(): vscode.Uri {
+		const scriptPathOnDisk = vscode.Uri.file(path.join(this._extPath, 'dist', 'bundle.js'));
+		return scriptPathOnDisk.with({ scheme: 'vscode-resource' });
+	}
 
-	return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIML Editor</title>
-</head>
-<body>
-	<script>
-	const vscode = acquireVsCodeApi();
-	</script>
-	<div id="root"></div>
-    <script src="${scriptUri}"></script>
-</body>
-</html>`;
+	getWebviewContent(): string {
+		return `<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>LIML Editor</title>
+	</head>
+	<body>
+		<script>
+		const vscode = acquireVsCodeApi();
+		</script>
+		<div id="root"></div>
+		<script src="${this.scriptUri()}"></script>
+	</body>
+	</html>`;
+	}
 }
