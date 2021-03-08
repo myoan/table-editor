@@ -39,7 +39,13 @@ function InsertEditableCell(x: number, y: number, width: number, height: number,
 
 const Cell: React.FC<CellProps> = props => {
     useEffect(() => {
-        let textarea = InsertEditableCell(props.x, props.y, props.width, props.height, props.text);
+        let textarea = InsertEditableCell(
+            props.x,
+            props.y,
+            props.width,
+            props.height,
+            props.text
+        );
         textarea.addEventListener('keydown', (e) => {
             if (e.keyCode === 13) {
                 console.log(textarea.value);
