@@ -63,11 +63,10 @@ const Cell: React.FC<CellProps> = props => {
           textarea.style.margin = '0px';
           textarea.style.overflow = 'hidden';
           textarea.style.background = 'white';
-          textarea.style.outline = 'none';
+          textarea.style.outlineColor = 'green';
           textarea.style.resize = 'none';
           textarea.addEventListener('keydown', (e) => {
             if (e.keyCode === 13) {
-              console.log('press enter');
               console.log(textarea.value);
               props.onClick(textarea.value);
               let input = document.getElementById('input-layer');

@@ -91,10 +91,8 @@ type CanvasProps = {
 }
 
 const Canvas: React.FC<CanvasProps> = props => {
-  // const width = window.innerWidth;
-  // const height = window.innerHeight;
-  const width = 1000;
-  const height = 1800;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
   console.log('width: ' + width + ', height: ' + height);
   return (
     <Stage className="canvas" width={width} height={height}>

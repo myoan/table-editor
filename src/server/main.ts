@@ -58,8 +58,6 @@ export class WebviewPanel {
 					return;
 			}
 		}, null);
-
-
 	}
 
 	scriptUri(): vscode.Uri {
