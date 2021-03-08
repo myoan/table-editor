@@ -11,31 +11,29 @@ export type CellProps = {
 };
 
 const Cell: React.FC<CellProps> = props => {
-    const [editable, setEditable] = useState(false);
     useEffect(() => {
-        console.log('cell clicked');
-        let canvas = document.getElementsByClassName('canvas')[0];
+        let canvas    = document.getElementsByClassName('canvas')[0];
         let canvasPos = canvas.getBoundingClientRect();
-        let input = document.getElementById('input-layer');
-        let textarea = document.createElement('textarea');
+        let input     = document.getElementById('input-layer');
+        let textarea  = document.createElement('textarea');
         if (input === null) { return; }
 
         input.appendChild(textarea);
-        textarea.value = props.text;
-        textarea.style.position = 'absolute';
-        textarea.style.top = (canvasPos.y + props.y) + 'px';
-        textarea.style.left = (canvasPos.x + props.x) + 'px';
-        textarea.style.width = (props.width - 10 /*padding*/) + 'px';
-        textarea.style.height = (props.height - 6)+ 'px';
-        textarea.style.fontSize = '20px';
-        textarea.style.fontFamily = 'Arial';
-        textarea.style.border = 'none';
-        textarea.style.padding = '3px 5px';
-        textarea.style.margin = '0px';
-        textarea.style.overflow = 'hidden';
-        textarea.style.background = 'white';
+        textarea.value              = props.text;
+        textarea.style.position     = 'absolute';
+        textarea.style.top          = (canvasPos.y + props.y) + 'px';
+        textarea.style.left         = (canvasPos.x + props.x) + 'px';
+        textarea.style.width        = (props.width - 10 /*padding*/) + 'px';
+        textarea.style.height       = (props.height - 6)+ 'px';
+        textarea.style.fontSize     = '20px';
+        textarea.style.fontFamily   = 'Arial';
+        textarea.style.border       = 'none';
+        textarea.style.padding      = '3px 5px';
+        textarea.style.margin       = '0px';
+        textarea.style.overflow     = 'hidden';
+        textarea.style.background   = 'white';
         textarea.style.outlineColor = 'green';
-        textarea.style.resize = 'none';
+        textarea.style.resize       = 'none';
 
         textarea.addEventListener('keydown', (e) => {
             if (e.keyCode === 13) {
@@ -56,7 +54,7 @@ const Cell: React.FC<CellProps> = props => {
                 y={props.y}
                 width={props.width}
                 height={props.height}
-                fill='#f0f0f0'
+                fill='white'
             />
             <Text
                 text={props.text}
@@ -70,10 +68,6 @@ const Cell: React.FC<CellProps> = props => {
                 width={props.width}
                 height={props.height}
                 fill='rgba(0, 0, 0, 0)'
-                onClick={() => {
-                    console.log('cell clicked!!');
-                    setEditable(true);
-                }}
             />
         </Group>
     )
