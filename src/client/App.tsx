@@ -43,6 +43,7 @@ function insertEditableCell(x: number, y: number, width: number, height: number,
     textarea.style.background   = 'white';
     textarea.style.outlineColor = 'green';
     textarea.style.resize       = 'none';
+    textarea.focus()
 
     return textarea;
 }
@@ -74,6 +75,13 @@ const Sheet: React.FC<SheetProps> = props => {
 
               while (input.firstChild) { input.removeChild(input.firstChild); }
               setEditCell({x: editableCell.colIndex, y: editableCell.rowIndex + 1})
+            } else if (e.keyCode === 9) { // tab
+              props.onClick(editableCell.rowIndex, editableCell.key, textarea.value)
+              let input = document.getElementById('input-layer')
+              if (input === null) { return; }
+
+              while (input.firstChild) { input.removeChild(input.firstChild); }
+              setEditCell({x: editableCell.colIndex + 1, y: editableCell.rowIndex})
             }
           });
         }
