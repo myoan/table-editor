@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as YAML from 'yaml'
 import {Stage, Layer, Group, Rect, Text} from 'react-konva';
 import './App.css';
@@ -20,18 +20,86 @@ type SheetProps = {
   onClick: (i: number, h: string, v: any) => void
 }
 
+function insertEditableCell(x: number, y: number, width: number, height: number, data: Logic.CellType): HTMLTextAreaElement {
+    let canvas    = document.getElementsByClassName('canvas')[0];
+    let canvasPos = canvas.getBoundingClientRect();
+    let input     = document.getElementById('input-layer');
+    let textarea  = document.createElement('textarea');
+    if (input === null) { return textarea; }
+
+    input.appendChild(textarea);
+    textarea.value              = data as string;
+    textarea.style.position     = 'absolute';
+    textarea.style.top          = (canvasPos.y + y) + 'px';
+    textarea.style.left         = (canvasPos.x + x) + 'px';
+    textarea.style.width        = (width - 10 /*padding*/) + 'px';
+    textarea.style.height       = (height - 6)+ 'px';
+    textarea.style.fontSize     = '20px';
+    textarea.style.fontFamily   = 'Arial';
+    textarea.style.border       = 'none';
+    textarea.style.padding      = '3px 5px';
+    textarea.style.margin       = '0px';
+    textarea.style.overflow     = 'hidden';
+    textarea.style.background   = 'white';
+    textarea.style.outlineColor = 'green';
+    textarea.style.resize       = 'none';
+
+    return textarea;
+}
+
 const Sheet: React.FC<SheetProps> = props => {
+  var [editCell, setEditCell] = useState({x: -1, y: -1})
+
+  useEffect(() => {
+    if (editCell.x < 0 || editCell.y < 0) return
+
+    for (var row of props.sheet.cells) {
+      for (var cell of row) {
+        if (editCell.x == cell.colIndex && editCell.y == cell.rowIndex) {
+          console.log('editable: (' + cell.colIndex + ', ' + cell.rowIndex + ')')
+
+          let textarea = insertEditableCell(
+            cell.x,
+            cell.y,
+            cell.width,
+            cell.height,
+            cell.value
+          );
+          textarea.addEventListener('keydown', (e) => {
+            if (e.keyCode === 13) {
+              // props.onClick(textarea.value);
+              let input = document.getElementById('input-layer');
+              if (input === null) { return; }
+
+              while (input.firstChild) { input.removeChild(input.firstChild); }
+              console.log('change cell')
+              setEditCell({x: cell.colIndex, y: cell.rowIndex + 1})
+            }
+          });
+        }
+      }
+    }
+    return (() => {
+      let input = document.getElementById('input-layer');
+      if (input === null) { return; }
+      while (input.firstChild) { input.removeChild(input.firstChild); }
+    })
+  }, [editCell])
+
   const table = props.sheet.cells.map ((row, i) => {
-    return row.map((cell) => {
+    return row.map((cell, j) => {
       return (
         <Cell
-          key={i}
+          key={i + '-' + j}
           x={cell.x}
           y={cell.y}
           width={cell.width}
           height={cell.height}
           cell={cell}
-          onClick={(v: any) => props.onClick(i, cell.key, v)}
+          onClick={() => {
+            console.log('clicked: (' + cell.colIndex + ', ' + cell.rowIndex + ')')
+            setEditCell({x: cell.colIndex, y: cell.rowIndex})
+          }}
         />
       )
     })
