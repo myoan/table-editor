@@ -56,7 +56,7 @@ const Sheet: React.FC<SheetProps> = props => {
     for (var row of props.sheet.cells) {
       for (var cell of row) {
         if (editCell.x == cell.colIndex && editCell.y == cell.rowIndex) {
-          console.log('editable: (' + cell.colIndex + ', ' + cell.rowIndex + ')')
+          let editableCell = cell
 
           let textarea = insertEditableCell(
             cell.x,
@@ -66,14 +66,14 @@ const Sheet: React.FC<SheetProps> = props => {
             cell.value
           );
           textarea.addEventListener('keydown', (e) => {
+            console.log('(' + editableCell.colIndex + ', ' + editableCell.rowIndex + ')')
             if (e.keyCode === 13) {
-              // props.onClick(textarea.value);
-              let input = document.getElementById('input-layer');
+              props.onClick(editableCell.rowIndex, editableCell.key, textarea.value)
+              let input = document.getElementById('input-layer')
               if (input === null) { return; }
 
               while (input.firstChild) { input.removeChild(input.firstChild); }
-              console.log('change cell')
-              setEditCell({x: cell.colIndex, y: cell.rowIndex + 1})
+              setEditCell({x: editableCell.colIndex, y: editableCell.rowIndex + 1})
             }
           });
         }
