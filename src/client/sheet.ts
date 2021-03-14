@@ -1,56 +1,115 @@
 export type CellType = string | number | boolean | undefined
 
-export type Cell = {
-    key: string,
-    value: CellType,
-    row: Row
+export class Cell {
+    sheet: Sheet
+    key: string
+    value: CellType
+    x: number
+    y: number
+    rowIndex: number
+    colIndex: number
+    width: number
+    height: number
+
+    constructor(sheet: Sheet, key: string, value: CellType, x: number, y: number, rowIndex: number, colIndex: number, width: number, height: number) {
+        this.sheet = sheet
+        this.key = key
+        this.value = value
+        this.x = x
+        this.y = y
+        this.rowIndex = rowIndex
+        this.colIndex = colIndex
+        this.width = width
+        this.height = height
+    }
+
+    column(): Line {
+        return this.sheet.column(this.colIndex)
+    }
+
+    row(): Line {
+        return this.sheet.column(this.rowIndex)
+    }
 }
 
-export class Row {
+interface Line {
+    index: number;
+    size:  number;
+    cells: Cell[];
+    setSize(size: number): void;
+}
+
+class Column implements Line {
     index: number
-    private header: string[]
-    private row:    CellType[]
-    private cells:  Cell[]
-    constructor(idx: number, header: string[], row: CellType[]) {
-        this.index  = idx
-        this.header = header
-        this.row    = row
-        this.cells  = this.row.map((cell, i) => {
-            return {key: this.header[i], value: cell, row: this}
-        });
+    size:  number
+    cells: Cell[]
+
+    constructor(index: number, cells: Cell[]) {
+        this.index = index
+        this.cells = cells
+        this.size  = this.cells[0].width
     }
 
-    cell(idx: number): Cell {
-        return {key: this.header[idx], value: this.row[idx], row: this}
-    }
-
-    cellIndex(cell: Cell): number {
-        return this.header.indexOf(cell.key)
-    }
-
-    nextCell(cell: Cell): Cell | undefined {
-        const idx = this.cellIndex(cell);
-        if (idx >= this.cells.length) {
-            return undefined
+    setSize(size: number) {
+        this.size = size;
+        for (var cell of this.cells) {
+            cell.width = size;
         }
-        return this.cells[idx + 1]
+    }
+}
+
+class Row implements Line {
+    index: number
+    size:  number
+    cells: Cell[]
+
+    constructor(index: number, cells: Cell[]) {
+        this.index = index
+        this.cells = cells
+        this.size  = this.cells[0].height
+    }
+
+    setSize(size: number) {
+        this.size = size;
+        for (var cell of this.cells) {
+            cell.height = size;
+        }
     }
 }
 
 export class Sheet {
-    static readonly DEFAULT_CELL_WIDTH  = 150
+    static readonly DEFAULT_CELL_WIDTH   = 150
     static readonly DEFAULT_CELL_HEIGHT = 30
 
-    private header: string[]
-    private body: CellType[][]
+    header: string[]
+    cells: Cell[][]
 
     constructor(header: string[], body: CellType[][]) {
         this.header = header
-        this.body   = body
+        this.cells = this.createCell(body)
+    }
+
+    private createCell(body: CellType[][]): Cell[][] {
+        let table: CellType[][] = [this.header]
+        table = table.concat(body)
+        return table.map((row, i) => {
+            return row.map((cell, j) => {
+                return new Cell(
+                    this,
+                    this.header[j],
+                    cell,
+                    (Sheet.DEFAULT_CELL_WIDTH  * j) + j + 1,
+                    (Sheet.DEFAULT_CELL_HEIGHT * i) + i + 1,
+                    i,
+                    j,
+                    Sheet.DEFAULT_CELL_WIDTH,
+                    Sheet.DEFAULT_CELL_HEIGHT)
+            });
+        });
     }
 
     rowNum(): number {
-        return this.body.length
+        return this.cells.length
     }
 
     colNum(): number {
@@ -58,21 +117,15 @@ export class Sheet {
     }
 
     cell(x: number, y: number): Cell {
-        return this.getBody()[0].cell(0)
+        return this.cells[y][x]
     }
 
-    getBody(): Row[] {
-        if (this.body.length == 0) { return []; }
-
-        return this.body.map((row, i) => {
-            return new Row(i, this.header, row)
-        });
+    row(idx: number): Row {
+        return new Row(idx, this.cells[idx])
     }
 
-    nextRow(row: Row): Row | undefined {
-        if (row.index >= this.getBody().length) {
-            return undefined
-        }
-        return this.getBody()[row.index + 1]
+    column(idx: number): Row {
+        const cols = this.cells.map((row) => { return row[idx] })
+        return new Column(idx, cols)
     }
 }

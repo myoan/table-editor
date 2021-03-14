@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {Group, Rect, Text} from 'react-konva';
+import * as Logic from './sheet';
 
 export type CellProps = {
     x: number
     y: number
     width: number
     height: number
-    text: string
+    cell: Logic.Cell
     onClick: (v: any) => void
 };
 
-function InsertEditableCell(x: number, y: number, width: number, height: number, text: string): HTMLTextAreaElement {
+function InsertEditableCell(x: number, y: number, width: number, height: number, data: Logic.CellType): HTMLTextAreaElement {
     let canvas    = document.getElementsByClassName('canvas')[0];
     let canvasPos = canvas.getBoundingClientRect();
     let input     = document.getElementById('input-layer');
@@ -18,7 +19,7 @@ function InsertEditableCell(x: number, y: number, width: number, height: number,
     if (input === null) { return textarea; }
 
     input.appendChild(textarea);
-    textarea.value              = text;
+    textarea.value              = data as string;
     textarea.style.position     = 'absolute';
     textarea.style.top          = (canvasPos.y + y) + 'px';
     textarea.style.left         = (canvasPos.x + x) + 'px';
@@ -44,7 +45,7 @@ const Cell: React.FC<CellProps> = props => {
             props.y,
             props.width,
             props.height,
-            props.text
+            props.cell.value
         );
         textarea.addEventListener('keydown', (e) => {
             if (e.keyCode === 13) {
@@ -54,6 +55,14 @@ const Cell: React.FC<CellProps> = props => {
                 if (input === null) { return; }
 
                 while (input.firstChild) { input.removeChild(input.firstChild); }
+
+                InsertEditableCell(
+                    props.x,
+                    props.y,
+                    props.width,
+                    props.height,
+                    props.cell.value
+                );
             }
         });
     })
@@ -68,7 +77,7 @@ const Cell: React.FC<CellProps> = props => {
                 fill='white'
             />
             <Text
-                text={props.text}
+                text={props.cell.value as string}
                 x={props.x + 5}
                 y={props.y + 5}
                 fontSize={20}

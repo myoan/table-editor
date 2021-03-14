@@ -3,6 +3,7 @@ import * as YAML from 'yaml'
 import {Stage, Layer, Group, Rect, Text} from 'react-konva';
 import './App.css';
 import Cell from './Cell';
+import * as Logic from './sheet';
 
 interface VsCodeApi {
   postMessage(msg: {}): void;
@@ -12,66 +13,30 @@ interface VsCodeApi {
 
 declare const vscode: VsCodeApi;
 
-type RowProps = {
-  idx: number
-  width: number
-  height: number
-  header: string[]
-  data: string[]
-  onClick: (h: string, v: any) => void
-}
-
-const Row: React.FC<RowProps> = props => {
-  const cells = props.data.map((value, i) => {
-    const w = props.width;
-    const h = props.height;
-    const x = w * i;
-    const y = h * props.idx;
-    return (
-      <Cell
-        key={i}
-        x={x+i+1}
-        y={y+props.idx+1}
-        width={w}
-        height={h}
-        text={value}
-        onClick={(v: any) => props.onClick(props.header[i], v)}
-      />
-    );
-  })
-  return (
-    <Group>
-      {cells}
-    </Group>
-  );
-}
-
 type SheetProps = {
   width: number
   height: number
-  header: string[]
-  body: string[][]
+  sheet: Logic.Sheet
   onClick: (i: number, h: string, v: any) => void
 }
 
-function tableData(header: string[], body: string[][]): string[][] {
-  return [header].concat(body);
-}
-
 const Sheet: React.FC<SheetProps> = props => {
-  const table = tableData(props.header, props.body).map((row, i) => {
-    return (
-      <Row
-        key={i}
-        idx={i}
-        width={150}
-        height={30}
-        header={props.header}
-        data={row}
-        onClick={(h: string, v: any) => props.onClick(i, h, v)}
-      />
-    );
-  });
+  const table = props.sheet.cells.map ((row, i) => {
+    return row.map((cell) => {
+      return (
+        <Cell
+          key={i}
+          x={cell.x}
+          y={cell.y}
+          width={cell.width}
+          height={cell.height}
+          cell={cell}
+          onClick={(v: any) => props.onClick(i, cell.key, v)}
+        />
+      )
+    })
+  })
+
   return (
     <Group>
       <Rect
@@ -85,8 +50,7 @@ const Sheet: React.FC<SheetProps> = props => {
 }
 
 type CanvasProps = {
-  header: string[]
-  body: string[][]
+  sheet: Logic.Sheet
   onClick: (i: number, h: string, v: any) => void
 }
 
@@ -100,8 +64,7 @@ const Canvas: React.FC<CanvasProps> = props => {
         <Sheet
           width={width}
           height={height}
-          header={props.header}
-          body={props.body}
+          sheet={props.sheet}
           onClick={(i: number, h: string, v: any) => props.onClick(i, h, v)}
         />
       </Layer>
@@ -117,6 +80,8 @@ interface AppState {
 }
 
 class App extends React.Component<AppProps, AppState> {
+  sheet: Logic.Sheet
+
   constructor(props: AppProps) {
     super(props);
     const yaml = YAML.parse("---");
@@ -138,6 +103,7 @@ class App extends React.Component<AppProps, AppState> {
           this.setState({yaml: newYaml});
       }
     })
+    this.sheet = new Logic.Sheet([], [])
   }
 
   updateData(id: number, header: string, value: any) {
@@ -161,13 +127,13 @@ class App extends React.Component<AppProps, AppState> {
     } else {
       header = Object.keys(this.state.yaml[0]);
       body = this.state.yaml.map((hash) => { return header.map((h) => hash[h]); });
+      this.sheet = new Logic.Sheet(header, body)
     }
 
     return (
       <div className="App">
         <Canvas
-          header={header}
-          body={body}
+          sheet={this.sheet}
           onClick={(i: number, h: string, v: any) => this.updateData(i, h, v)}
         />
         <div id='input-layer'></div>

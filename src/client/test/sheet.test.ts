@@ -2,7 +2,7 @@ import * as sheet from './../sheet';
 
 describe('Sheet', () => {
     let s: sheet.Sheet;
-    let header: string[] = ['id', 'name', 'releaes'];
+    let header: string[] = ['id', 'name', 'release'];
     let body: sheet.CellType[][] = [
         [1, 'pokemon', 1995],
         [2, 'minecraft', 2011],
@@ -12,9 +12,77 @@ describe('Sheet', () => {
         s = new sheet.Sheet(header, body);
     });
 
+    describe('#new', () => {
+        test('create cell', () => {
+            expect(s.cells[0][0].value).toBe('id')
+            expect(s.cells[0][0].x).toBe(1)
+            expect(s.cells[0][0].y).toBe(1)
+            expect(s.cells[0][0].rowIndex).toBe(0)
+            expect(s.cells[0][0].colIndex).toBe(0)
+            expect(s.cells[0][1].value).toBe('name')
+            expect(s.cells[0][1].x).toBe(152)
+            expect(s.cells[0][1].y).toBe(1)
+            expect(s.cells[0][1].rowIndex).toBe(0)
+            expect(s.cells[0][1].colIndex).toBe(1)
+            expect(s.cells[0][2].value).toBe('release')
+            expect(s.cells[0][2].x).toBe(303)
+            expect(s.cells[0][2].y).toBe(1)
+            expect(s.cells[0][2].rowIndex).toBe(0)
+            expect(s.cells[0][2].colIndex).toBe(2)
+
+            expect(s.cells[1][0].value).toBe(1)
+            expect(s.cells[1][0].x).toBe(1)
+            expect(s.cells[1][0].y).toBe(32)
+            expect(s.cells[1][0].rowIndex).toBe(1)
+            expect(s.cells[1][0].colIndex).toBe(0)
+            expect(s.cells[1][1].value).toBe('pokemon')
+            expect(s.cells[1][1].x).toBe(152)
+            expect(s.cells[1][1].y).toBe(32)
+            expect(s.cells[1][1].rowIndex).toBe(1)
+            expect(s.cells[1][1].colIndex).toBe(1)
+            expect(s.cells[1][2].value).toBe(1995)
+            expect(s.cells[1][2].x).toBe(303)
+            expect(s.cells[1][2].y).toBe(32)
+            expect(s.cells[1][2].rowIndex).toBe(1)
+            expect(s.cells[1][2].colIndex).toBe(2)
+
+            expect(s.cells[2][0].value).toBe(2)
+            expect(s.cells[2][0].x).toBe(1)
+            expect(s.cells[2][0].y).toBe(63)
+            expect(s.cells[2][0].rowIndex).toBe(2)
+            expect(s.cells[2][0].colIndex).toBe(0)
+            expect(s.cells[2][1].value).toBe('minecraft')
+            expect(s.cells[2][1].x).toBe(152)
+            expect(s.cells[2][1].y).toBe(63)
+            expect(s.cells[2][1].rowIndex).toBe(2)
+            expect(s.cells[2][1].colIndex).toBe(1)
+            expect(s.cells[2][2].value).toBe(2011)
+            expect(s.cells[2][2].x).toBe(303)
+            expect(s.cells[2][2].y).toBe(63)
+            expect(s.cells[2][2].rowIndex).toBe(2)
+            expect(s.cells[2][2].colIndex).toBe(2)
+
+            expect(s.cells[3][0].value).toBe(3)
+            expect(s.cells[3][0].x).toBe(1)
+            expect(s.cells[3][0].y).toBe(94)
+            expect(s.cells[3][0].rowIndex).toBe(3)
+            expect(s.cells[3][0].colIndex).toBe(0)
+            expect(s.cells[3][1].value).toBe('factorio')
+            expect(s.cells[3][1].x).toBe(152)
+            expect(s.cells[3][1].y).toBe(94)
+            expect(s.cells[3][0].rowIndex).toBe(3)
+            expect(s.cells[3][1].colIndex).toBe(1)
+            expect(s.cells[3][2].value).toBe(2020)
+            expect(s.cells[3][2].x).toBe(303)
+            expect(s.cells[3][2].y).toBe(94)
+            expect(s.cells[3][2].rowIndex).toBe(3)
+            expect(s.cells[3][2].colIndex).toBe(2)
+        });
+    });
+
     describe('#rowNum', () => {
         test('returns current row number', () => {
-            expect(s.rowNum()).toBe(3);
+            expect(s.rowNum()).toBe(4);
         });
     });
 
@@ -24,98 +92,42 @@ describe('Sheet', () => {
         });
     });
 
-    describe('#getBody', () => {
-        describe('when empty body', () => {
-            let body: string[][] = [];
-            beforeEach(() => {
-                s = new sheet.Sheet(header, body);
-            });
-            test('returns empty array', () => {
-                expect(s.getBody().length).toBe(0);
-            });
+    describe('#row', () => {
+        test('returns row', () => {
+            expect(s.row(0).cells[0].value).toBe('id');
+            expect(s.row(0).cells[1].value).toBe('name');
+            expect(s.row(0).cells[2].value).toBe('release');
+
+            expect(s.row(1).cells[0].value).toBe(1);
+            expect(s.row(1).cells[1].value).toBe('pokemon');
+            expect(s.row(1).cells[2].value).toBe(1995);
+
+            expect(s.row(2).cells[0].value).toBe(2);
+            expect(s.row(2).cells[1].value).toBe('minecraft');
+            expect(s.row(2).cells[2].value).toBe(2011);
+
+            expect(s.row(3).cells[0].value).toBe(3);
+            expect(s.row(3).cells[1].value).toBe('factorio');
+            expect(s.row(3).cells[2].value).toBe(2020);
         });
-        test('returns sheet.Row Object', () => {
-            const row = s.getBody()[0]
-            expect(row).toBeInstanceOf(sheet.Row);
-            expect(row.cell(0).value).toBe(1);
-            expect(row.cell(1).value).toBe('pokemon');
-            expect(row.cell(2).value).toBe(1995);
+    })
+
+    describe('#column', () => {
+        test('returns column', () => {
+            expect(s.column(0).cells[0].value).toBe('id');
+            expect(s.column(0).cells[1].value).toBe(1);
+            expect(s.column(0).cells[2].value).toBe(2);
+            expect(s.column(0).cells[3].value).toBe(3);
+
+            expect(s.column(1).cells[0].value).toBe('name');
+            expect(s.column(1).cells[1].value).toBe('pokemon');
+            expect(s.column(1).cells[2].value).toBe('minecraft');
+            expect(s.column(1).cells[3].value).toBe('factorio');
+
+            expect(s.column(2).cells[0].value).toBe('release');
+            expect(s.column(2).cells[1].value).toBe(1995);
+            expect(s.column(2).cells[2].value).toBe(2011);
+            expect(s.column(2).cells[3].value).toBe(2020);
         });
-    });
-
-    describe('#nextRow', () => {
-        test('returns next Row Object', () => {
-            const row = s.getBody()[0]
-            const actual = s.nextRow(row)
-            expect(actual).not.toBe(undefined)
-            if (actual == undefined) { return } 
-
-            expect(actual.cell(0).value).toBe(2)
-        })
-
-        test('returns last Row Object', () => {
-            const row = s.getBody()[1]
-            const actual = s.nextRow(row)
-            expect(actual).not.toBe(undefined)
-            if (actual == undefined) { return } 
-
-            expect(actual.cell(0).value).toBe(3)
-        })
-
-        test('when inserted last row, it returns undefined', () => {
-            const row = s.getBody()[2]
-            const actual = s.nextRow(row)
-            expect(actual).toBe(undefined)
-        })
-    });
-});
-
-describe('Row', () => {
-    describe('#cellIndex', () => {
-        let row: sheet.Row;
-        let header: string[] = ['id', 'name', 'release'];
-        let cells: sheet.CellType[] = [1, 'pokemon', 1995];
-        beforeEach(() => {
-            row = new sheet.Row(1, header, cells);
-        });
-
-        test('returns cell index', () => {
-            expect(row.cellIndex(row.cell(0))).toBe(0);
-            expect(row.cellIndex(row.cell(1))).toBe(1);
-            expect(row.cellIndex(row.cell(2))).toBe(2);
-        });
-    });
-
-    describe('#nextCell', () => {
-        let row: sheet.Row;
-        let header: string[] = ['id', 'name', 'release'];
-        let cells: string[] = ['1', 'pokemon', '1995'];
-        beforeEach(() => {
-            row = new sheet.Row(1, header, cells);
-        });
-
-        test('returns right cell', () => {
-            const arg = row.cell(0)
-            const actual = row.nextCell(arg)
-            expect(actual).not.toBe(undefined);
-            if (actual == undefined) { return }
-
-            expect(actual.key).toBe('name');
-        });
-
-        test('returns right cell', () => {
-            const arg = row.cell(1)
-            const actual = row.nextCell(arg)
-            expect(actual).not.toBe(undefined);
-            if (actual == undefined) { return }
-
-            expect(actual.key).toBe('release');
-        });
-
-        test('when cell end, it returns null', () => {
-            const arg = row.cell(2)
-            const actual = row.nextCell(arg)
-            expect(actual).toBe(undefined);
-        });
-    });
+    })
 });
