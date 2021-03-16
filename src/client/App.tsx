@@ -3,6 +3,7 @@ import * as YAML from 'yaml'
 import {Stage, Layer, Group, Rect, Text} from 'react-konva';
 import './App.css';
 import Cell from './Cell';
+import ContextMenu from './Event';
 import * as Logic from './sheet';
 
 interface VsCodeApi {
@@ -213,6 +214,7 @@ class App extends React.Component<AppProps, AppState> {
           onClick={(i: number, h: string, v: any) => this.updateData(i, h, v)}
         />
         <div id='input-layer'></div>
+        <ContextMenu />
       </div>
     );
   }
