@@ -132,9 +132,14 @@ type CanvasProps = {
 }
 
 const Canvas: React.FC<CanvasProps> = props => {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
-  console.log('width: ' + width + ', height: ' + height);
+  var [width, setWidth] = useState(window.innerWidth)
+  var [height, setHeight] = useState(window.innerHeight)
+
+  window.addEventListener('resize', (event) => {
+    setWidth(window.innerWidth)
+    setHeight(window.innerHeight)
+  })
+
   return (
     <Stage className="canvas" width={width} height={height}>
       <Layer>
