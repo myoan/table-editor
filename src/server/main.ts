@@ -38,7 +38,7 @@ export class WebviewPanel {
 		this.panel = vscode.window.createWebviewPanel(
 			'liml',
 			'LIML editor',
-			vscode.ViewColumn.Beside,
+			vscode.ViewColumn.One,
 			{ enableScripts: true }
 		);
 		
