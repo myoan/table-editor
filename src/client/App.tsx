@@ -106,7 +106,6 @@ const Sheet: React.FC<SheetProps> = props => {
           height={cell.height}
           cell={cell}
           onClick={() => {
-            console.log('clicked: (' + cell.colIndex + ', ' + cell.rowIndex + ')')
             setEditCell({x: cell.colIndex, y: cell.rowIndex})
           }}
         />

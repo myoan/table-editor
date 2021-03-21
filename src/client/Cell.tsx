@@ -33,7 +33,7 @@ const Cell: React.FC<CellProps> = props => {
                 width={props.width}
                 height={props.height}
                 fill='rgba(0,0,0,0)'
-                onClick={() => props.onClick() }
+                onDblClick={() => props.onClick()}
             />
         </Group>
     )
