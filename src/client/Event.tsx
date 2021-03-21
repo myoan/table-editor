@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import './event.scss';
 
 type ContextMenuProps = {}
 
@@ -26,13 +27,24 @@ const ContextMenu: React.FC<ContextMenuProps> = props => {
     console.log(`showmenu: ${showMenu}, (${x}, ${y})`)
     if (showMenu) {
         return (
-            <ul
-                className="menu"
-                style={{ top: y, left: x, position: 'fixed' }}
-            >
-                <li>Insert up Line</li>
-                <li>Insert down Line</li>
-            </ul>
+            <div
+            className="menu"
+            style={{
+                top: y,
+                left: x,
+                position: 'fixed',
+            }} >
+                <ul>
+                    <li>Insert line above</li>
+                    <li>Insert line below</li>
+                    <li>Copy</li>
+                    <li>Peste</li>
+                    <li>Cut</li>
+                    <li>Clear</li>
+                    <li>Delete column</li>
+                    <li>Delete row</li>
+                </ul>
+            </div>
         );
     } else {
         return null

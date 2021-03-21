@@ -59,6 +59,19 @@ const clientConfig = {
           loader: 'babel-loader'
         }
       },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              url: false,
+              sourceMap: true,
+            }
+          }
+        ]
+      },
       { test: /\.css$/, use: 'css-loader' }
     ]
   }

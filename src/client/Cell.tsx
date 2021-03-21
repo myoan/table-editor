@@ -33,7 +33,11 @@ const Cell: React.FC<CellProps> = props => {
                 width={props.width}
                 height={props.height}
                 fill='rgba(0,0,0,0)'
-                onDblClick={() => props.onClick()}
+                onClick={() => {
+                    // TODO: Select Cell, but not editable
+                    console.log('cell clicked!!')
+                }}
+                onDblClick={() => props.onClick() }
             />
         </Group>
     )
