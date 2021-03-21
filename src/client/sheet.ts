@@ -82,10 +82,12 @@ export class Sheet {
     static readonly DEFAULT_CELL_HEIGHT = 30
 
     header: string[]
+    body: CellType[][]
     cells: Cell[][]
 
     constructor(header: string[], body: CellType[][]) {
         this.header = header
+        this.body = body
         this.cells = this.createCell(body)
     }
 
@@ -108,6 +110,23 @@ export class Sheet {
         });
     }
 
+    private convertCellType(): CellType[][] {
+        return this.cells.map((row) => {
+            return row.map((cell) => {
+                return cell.value
+            })
+        })
+    }
+
+    // TODO: Implement it
+    cellFromPx(x: number, y: number): Cell {
+        return this.cells[0][0]
+    }
+
+    table(): Cell[][] {
+        return this.cells
+    }
+
     rowNum(): number {
         return this.cells.length
     }
@@ -128,4 +147,28 @@ export class Sheet {
         const cols = this.cells.map((row) => { return row[idx] })
         return new Column(idx, cols)
     }
+
+    insertRow(idx: number, row: CellType[]) {
+        if (idx >= this.body.length) { throw 'index exceeds table row size' }
+
+        this.body.splice(idx, 0, row)
+        this.cells = this.createCell(this.body)
+    }
+
+    insertCol(idx: number, key: string, col: CellType[]) {
+        if (col.length != this.body.length) { throw "column is different from column size" }
+        if (idx >= this.body.length) { throw "index exceeds table column size" }
+
+        this.header.splice(idx, 0, key)
+        this.body.map((row, i) => {
+            row.splice(idx, 0, col[i])
+        })
+        this.cells = this.createCell(this.body)
+    }
+
+    deleteRow(idx: number) {}
+    deleteCol(idx: number) {}
+
+    moveRow(fromIdx: number, toIdx: number) {}
+    moveCol(fromIdx: number, toIdx: number) {}
 }

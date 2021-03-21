@@ -35,14 +35,14 @@ const ContextMenu: React.FC<ContextMenuProps> = props => {
                 position: 'fixed',
             }} >
                 <ul>
-                    <li>Insert line above</li>
+                    <li onClick={() => console.log('hello clcik')} >Insert line above</li>
                     <li>Insert line below</li>
+                    <li>Delete column</li>
+                    <li>Delete line</li>
                     <li>Copy</li>
                     <li>Peste</li>
                     <li>Cut</li>
                     <li>Clear</li>
-                    <li>Delete column</li>
-                    <li>Delete row</li>
                 </ul>
             </div>
         );

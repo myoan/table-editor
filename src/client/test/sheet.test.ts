@@ -1,19 +1,20 @@
+import { assert } from 'node:console';
 import * as sheet from './../sheet';
 
 describe('Sheet', () => {
-    let s: sheet.Sheet;
-    let header: string[] = ['id', 'name', 'release'];
-    let body: sheet.CellType[][] = [
-        [1, 'pokemon', 1995],
-        [2, 'minecraft', 2011],
-        [3, 'factorio', 2020]
-    ];
-    beforeEach(() => {
-        s = new sheet.Sheet(header, body);
-    });
-
+    const header = (): string[] => {
+        return ['id', 'name', 'release']
+    }
+    const body = (): sheet.CellType[][] => {
+        return [
+            [1, 'pokemon', 1995],
+            [2, 'minecraft', 2011],
+            [3, 'factorio', 2020]
+        ]
+    }
     describe('#new', () => {
         test('create cell', () => {
+            const s = new sheet.Sheet(header(), body());
             expect(s.cells[0][0].value).toBe('id')
             expect(s.cells[0][0].x).toBe(1)
             expect(s.cells[0][0].y).toBe(1)
@@ -82,18 +83,21 @@ describe('Sheet', () => {
 
     describe('#rowNum', () => {
         test('returns current row number', () => {
+            const s = new sheet.Sheet(header(), body());
             expect(s.rowNum()).toBe(4);
         });
     });
 
     describe('#colNum', () => {
         test('returns current col number', () => {
+            const s = new sheet.Sheet(header(), body());
             expect(s.colNum()).toBe(3);
         });
     });
 
     describe('#row', () => {
         test('returns row', () => {
+            const s = new sheet.Sheet(header(), body());
             expect(s.row(0).cells[0].value).toBe('id');
             expect(s.row(0).cells[1].value).toBe('name');
             expect(s.row(0).cells[2].value).toBe('release');
@@ -114,6 +118,7 @@ describe('Sheet', () => {
 
     describe('#column', () => {
         test('returns column', () => {
+            const s = new sheet.Sheet(header(), body());
             expect(s.column(0).cells[0].value).toBe('id');
             expect(s.column(0).cells[1].value).toBe(1);
             expect(s.column(0).cells[2].value).toBe(2);
@@ -129,5 +134,50 @@ describe('Sheet', () => {
             expect(s.column(2).cells[2].value).toBe(2011);
             expect(s.column(2).cells[3].value).toBe(2020);
         });
+    })
+
+    describe('insertRow', () => {
+        test('inserts top row', () => {
+            const s = new sheet.Sheet(header(), body());
+            let row: sheet.CellType[] = ['a', 'b', 'c']
+            s.insertRow(0, row)
+            expect(s.row(1).cells[0].value).toBe('a')
+        })
+
+        test('inserts after first row', () => {
+            const s = new sheet.Sheet(header(), body());
+            let row: sheet.CellType[] = ['a', 'b', 'c']
+            s.insertRow(2, row)
+            expect(s.row(3).cells[0].value).toBe('a')
+        })
+
+        test('inserts after last row', () => {
+            const s = new sheet.Sheet(header(), body());
+            let row: sheet.CellType[] = ['a', 'b', 'c']
+            expect(() => s.insertRow(100, row)).toThrow()
+        })
+    })
+
+    describe('insertCol', () => {
+        test('inserts first column', () => {
+            const s = new sheet.Sheet(header(), body());
+            let col: sheet.CellType[] = ['a', 'b', 'c']
+            s.insertCol(0, 'alphabet', col)
+            expect(s.column(0).cells[0].value).toBe('alphabet')
+        })
+
+        test('inserts second column', () => {
+            const s = new sheet.Sheet(header(), body());
+            let col: sheet.CellType[] = ['a', 'b', 'c']
+            s.insertCol(1, 'alphabet', col)
+            expect(s.column(0).cells[0].value).toBe('id')
+            expect(s.column(1).cells[0].value).toBe('alphabet')
+        })
+
+        test('inserts after last column', () => {
+            const s = new sheet.Sheet(header(), body());
+            let col: sheet.CellType[] = ['a', 'b', 'c']
+            expect(() => s.insertCol(100, 'alphabet', col)).toThrow()
+        })
     })
 });
