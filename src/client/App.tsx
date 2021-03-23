@@ -61,8 +61,8 @@ const Sheet: React.FC<SheetProps> = props => {
           let editableCell = cell
 
           let textarea = insertEditableCell(
-            cell.x,
-            cell.y,
+            cell.pos.x,
+            cell.pos.y,
             cell.width,
             cell.height,
             cell.value
@@ -100,8 +100,8 @@ const Sheet: React.FC<SheetProps> = props => {
       return (
         <Cell
           key={i + '-' + j}
-          x={cell.x}
-          y={cell.y}
+          x={cell.pos.x}
+          y={cell.pos.y}
           width={cell.width}
           height={cell.height}
           cell={cell}

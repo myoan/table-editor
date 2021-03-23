@@ -1,22 +1,25 @@
 export type CellType = string | number | boolean | undefined
 
+export type Position = {
+    x: number,
+    y: number,
+}
+
 export class Cell {
     sheet: Sheet
     key: string
     value: CellType
-    x: number
-    y: number
+    pos: Position
     rowIndex: number
     colIndex: number
     width: number
     height: number
 
-    constructor(sheet: Sheet, key: string, value: CellType, x: number, y: number, rowIndex: number, colIndex: number, width: number, height: number) {
+    constructor(sheet: Sheet, key: string, value: CellType, pos: Position, rowIndex: number, colIndex: number, width: number, height: number) {
         this.sheet = sheet
         this.key = key
         this.value = value
-        this.x = x
-        this.y = y
+        this.pos = pos
         this.rowIndex = rowIndex
         this.colIndex = colIndex
         this.width = width
@@ -30,9 +33,13 @@ export class Cell {
     row(): Line {
         return this.sheet.column(this.rowIndex)
     }
+
+    onClickHandler      = () => console.log('onClick!!')
+    onDblClickHandler   = () => console.log('onDblClick!!')
+    onRightClickHandler = () => console.log('onRightClick!!')
 }
 
-interface Line {
+export interface Line {
     index: number;
     size:  number;
     cells: Cell[];
@@ -100,8 +107,10 @@ export class Sheet {
                     this,
                     this.header[j],
                     cell,
-                    (Sheet.DEFAULT_CELL_WIDTH  * j) + j + 1,
-                    (Sheet.DEFAULT_CELL_HEIGHT * i) + i + 1,
+                    {
+                        x: (Sheet.DEFAULT_CELL_WIDTH  * j) + j + 1,
+                        y: (Sheet.DEFAULT_CELL_HEIGHT * i) + i + 1,
+                    },
                     i,
                     j,
                     Sheet.DEFAULT_CELL_WIDTH,
