@@ -5,33 +5,36 @@ export type Position = {
     y: number,
 }
 
+export type Index = {
+    x: number,
+    y: number,
+}
+
 export class Cell {
     sheet: Sheet
     key: string
     value: CellType
     pos: Position
-    rowIndex: number
-    colIndex: number
+    index: Index
     width: number
     height: number
 
-    constructor(sheet: Sheet, key: string, value: CellType, pos: Position, rowIndex: number, colIndex: number, width: number, height: number) {
+    constructor(sheet: Sheet, key: string, value: CellType, pos: Position, index: Index, width: number, height: number) {
         this.sheet = sheet
         this.key = key
         this.value = value
         this.pos = pos
-        this.rowIndex = rowIndex
-        this.colIndex = colIndex
+        this.index = index
         this.width = width
         this.height = height
     }
 
     column(): Line {
-        return this.sheet.column(this.colIndex)
+        return this.sheet.column(this.index.x)
     }
 
     row(): Line {
-        return this.sheet.column(this.rowIndex)
+        return this.sheet.column(this.index.y)
     }
 
     onClickHandler      = () => console.log('onClick!!')
@@ -111,8 +114,10 @@ export class Sheet {
                         x: (Sheet.DEFAULT_CELL_WIDTH  * j) + j + 1,
                         y: (Sheet.DEFAULT_CELL_HEIGHT * i) + i + 1,
                     },
-                    i,
-                    j,
+                    {
+                        x: j,
+                        y: i,
+                    },
                     Sheet.DEFAULT_CELL_WIDTH,
                     Sheet.DEFAULT_CELL_HEIGHT)
             });

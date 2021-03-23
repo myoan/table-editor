@@ -57,7 +57,7 @@ const Sheet: React.FC<SheetProps> = props => {
 
     for (var row of props.sheet.cells) {
       for (var cell of row) {
-        if (editCell.x == cell.colIndex && editCell.y == cell.rowIndex) {
+        if (editCell.x == cell.index.x && editCell.y == cell.index.y) {
           let editableCell = cell
 
           let textarea = insertEditableCell(
@@ -68,21 +68,21 @@ const Sheet: React.FC<SheetProps> = props => {
             cell.value
           );
           textarea.addEventListener('keydown', (e) => {
-            console.log('(' + editableCell.colIndex + ', ' + editableCell.rowIndex + ')')
+            console.log('(' + editableCell.index.x + ', ' + editableCell.index.y + ')')
             if (e.keyCode === 13) {
-              props.onClick(editableCell.rowIndex, editableCell.key, textarea.value)
+              props.onClick(editableCell.index.y, editableCell.key, textarea.value)
               let input = document.getElementById('input-layer')
               if (input === null) { return; }
 
               while (input.firstChild) { input.removeChild(input.firstChild); }
-              setEditCell({x: editableCell.colIndex, y: editableCell.rowIndex + 1})
+              setEditCell({x: editableCell.index.x, y: editableCell.index.y + 1})
             } else if (e.keyCode === 9) { // tab
-              props.onClick(editableCell.rowIndex, editableCell.key, textarea.value)
+              props.onClick(editableCell.index.y, editableCell.key, textarea.value)
               let input = document.getElementById('input-layer')
               if (input === null) { return; }
 
               while (input.firstChild) { input.removeChild(input.firstChild); }
-              setEditCell({x: editableCell.colIndex + 1, y: editableCell.rowIndex})
+              setEditCell({x: editableCell.index.x + 1, y: editableCell.index.y})
             }
           });
         }
@@ -106,7 +106,7 @@ const Sheet: React.FC<SheetProps> = props => {
           height={cell.height}
           cell={cell}
           onClick={() => {
-            setEditCell({x: cell.colIndex, y: cell.rowIndex})
+            setEditCell({x: cell.index.x, y: cell.index.y})
           }}
         />
       )
