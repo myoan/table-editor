@@ -12,9 +12,9 @@ export type Index = {
 
 export class Cell {
     sheet: Sheet
-    key: string
+    key:   string
     value: CellType
-    pos: Position
+    pos:   Position
     index: Index
     width: number
     height: number
