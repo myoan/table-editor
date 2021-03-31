@@ -1,5 +1,5 @@
 import { assert } from 'node:console';
-import * as sheet from './../sheet';
+import * as sheet from '../model/sheet';
 
 describe('Sheet', () => {
     const header = (): string[] => {

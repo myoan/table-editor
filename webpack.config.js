@@ -42,7 +42,7 @@ const clientConfig = {
   target: 'node',
 	mode: 'development',
 
-  entry: './src/client/index.tsx',
+  entry: './src/client/app.ts',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'

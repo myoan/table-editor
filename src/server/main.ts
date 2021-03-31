@@ -38,7 +38,8 @@ export class WebviewPanel {
 		this.panel = vscode.window.createWebviewPanel(
 			'liml',
 			'LIML editor',
-			vscode.ViewColumn.One,
+			vscode.ViewColumn.Beside,
+			// vscode.ViewColumn.One,
 			{ enableScripts: true }
 		);
 		
@@ -65,6 +66,12 @@ export class WebviewPanel {
 		return scriptPathOnDisk.with({ scheme: 'vscode-resource' });
 	}
 
+	cssUri(): vscode.Uri {
+		const cssPathOnDisk = vscode.Uri.file(path.join(this._extPath, 'public', 'main.css'));
+		return cssPathOnDisk.with({ scheme: 'vscode-resource' });
+	}
+
+	/*
 	getWebviewContent(): string {
 		return `<!DOCTYPE html>
 	<html lang="en">
@@ -81,5 +88,26 @@ export class WebviewPanel {
 		<script src="${this.scriptUri()}"></script>
 	</body>
 	</html>`;
+	}
+	*/
+
+	getWebviewContent(): string {
+		return (`<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<link rel="stylesheet" href="${this.cssUri()}">
+				<title>Table Editor</title>
+			</head>
+			<body>
+				<script>
+					const vscode = acquireVsCodeApi();
+				</script>
+				<canvas id="sheet"></canvas>
+				<div id="input-layer"></div>
+				<script src="${this.scriptUri()}"></script>
+			</body>
+			</html>`)
 	}
 }

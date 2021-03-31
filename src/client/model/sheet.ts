@@ -34,12 +34,42 @@ export class Cell {
     }
 
     row(): Line {
-        return this.sheet.column(this.index.y)
+        return this.sheet.row(this.index.y)
     }
 
-    onClickHandler      = () => console.log('onClick!!')
-    onDblClickHandler   = () => console.log('onDblClick!!')
-    onRightClickHandler = () => console.log('onRightClick!!')
+    insertAbove() {
+        console.log(`insert above line to ${this.index.y-1}`)
+        const cells: CellType[] = Array(this.sheet.colNum()).fill('')
+        this.sheet.insertRow(this.index.y - 1, cells)
+    }
+
+    insertBelow() {
+        console.log(`insert below line to ${this.index.y}`)
+        const cells: CellType[] = Array(this.sheet.colNum()).fill('')
+        this.sheet.insertRow(this.index.y, cells)
+    }
+
+    insertLeft() {
+        console.log(`insert left line to ${this.index.x}`)
+        const cells: CellType[] = Array(this.sheet.body.length).fill('')
+        this.sheet.insertCol(this.index.x, '', cells)
+    }
+
+    insertRight() {
+        console.log(`insert right line to ${this.index.x + 1}`)
+        const cells: CellType[] = Array(this.sheet.body.length).fill('')
+        this.sheet.insertCol(this.index.x + 1, '', cells)
+    }
+
+    deleteRow() {
+        console.log(`delete row ${this.index.y - 1}`)
+        this.sheet.deleteRow(this.index.y - 1)
+    }
+
+    deleteCol() {
+        console.log(`delete col ${this.index.x}`)
+        this.sheet.deleteCol(this.index.x)
+    }
 }
 
 export interface Line {
@@ -132,6 +162,20 @@ export class Sheet {
         })
     }
 
+    toHash(): any {
+        let ret = this.cells.map((row) => {
+            var hash: { [key: string]: string; } = {};
+            for (var cell of row) {
+                hash[cell.key] = cell.value as string
+            }
+            console.log(hash)
+            return hash
+        })
+        ret.shift()
+
+        return ret
+    }
+
     // TODO: Implement it
     cellFromPx(x: number, y: number): Cell {
         return this.cells[0][0]
@@ -163,7 +207,7 @@ export class Sheet {
     }
 
     insertRow(idx: number, row: CellType[]) {
-        if (idx >= this.body.length) { throw 'index exceeds table row size' }
+        if (idx > this.body.length) { throw 'index exceeds table row size' }
 
         this.body.splice(idx, 0, row)
         this.cells = this.createCell(this.body)
@@ -180,8 +224,22 @@ export class Sheet {
         this.cells = this.createCell(this.body)
     }
 
-    deleteRow(idx: number) {}
-    deleteCol(idx: number) {}
+    deleteRow(idx: number) {
+        if (idx >= this.body.length) { throw 'index exceeds table row size' }
+
+        this.body.splice(idx, 1)
+        this.cells = this.createCell(this.body)
+    }
+
+    deleteCol(idx: number) {
+        if (idx >= this.body.length) { throw "index exceeds table column size" }
+
+        this.header.splice(idx, 1)
+        this.body.map((row, i) => {
+            row.splice(idx, 1)
+        })
+        this.cells = this.createCell(this.body)
+    }
 
     moveRow(fromIdx: number, toIdx: number) {}
     moveCol(fromIdx: number, toIdx: number) {}
